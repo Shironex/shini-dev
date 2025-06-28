@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@prisma/client": "^6.10.1",
     "@shini-dev/ui": "workspace:*",
     "lucide-react": "^0.475.0",
     "next": "^15.2.3",
@@ -20,11 +21,13 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@shini-dev/eslint-config": "workspace:^",
+    "@shini-dev/typescript-config": "workspace:*",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@shini-dev/eslint-config": "workspace:^",
-    "@shini-dev/typescript-config": "workspace:*",
+    "prisma": "^6.10.1",
+    "tsx": "^4.20.3",
     "typescript": "^5.7.3"
   }
 }

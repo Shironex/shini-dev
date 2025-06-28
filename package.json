@@ -6,7 +6,11 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "db:up": "docker-compose up -d postgres",
+    "db:down": "docker-compose down",
+    "db:restart": "docker-compose restart postgres",
+    "db:logs": "docker-compose logs -f postgres"
   },
   "devDependencies": {
     "@shini-dev/eslint-config": "workspace:*",
