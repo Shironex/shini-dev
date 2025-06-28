@@ -27,7 +27,7 @@ export default function Page() {
   };
 
   return (
-    <div className="h-screen w-screen flex items-center justify-center">
+    <div className="h-screen w-screen flex flex-col space-y-4 items-center justify-center">
       <div className="max-w-7xl mx-auto flex items-center justify-center">
         <div className="flex flex-col items-center justify-center gap-4">
           <h1 className="text-2xl font-bold">Shini</h1>
