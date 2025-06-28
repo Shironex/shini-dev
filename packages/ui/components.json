@@ -11,10 +11,10 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@workspace/ui/components",
-    "utils": "@workspace/ui/lib/utils",
-    "hooks": "@workspace/ui/hooks",
-    "lib": "@workspace/ui/lib",
-    "ui": "@workspace/ui/components"
+    "components": "@shini-dev/ui/components",
+    "utils": "@shini-dev/ui/lib/utils",
+    "hooks": "@shini-dev/ui/hooks",
+    "lib": "@shini-dev/ui/lib",
+    "ui": "@shini-dev/ui/components"
   }
 }
