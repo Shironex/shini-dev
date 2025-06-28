@@ -4,6 +4,7 @@ import {
   createAgent,
   createTool,
   createNetwork,
+  Tool,
 } from "@inngest/agent-kit";
 import { inngest } from "./client";
 import { Sandbox } from "@e2b/code-interpreter";
@@ -14,6 +15,13 @@ import { prisma } from "@/lib/db";
 
 const SANDBOX_TEMPLATE_ID = "shini-dev-next-js-test";
 
+interface AgentState {
+  summary: string;
+  files: {
+    [path: string]: string;
+  };
+}
+
 export const codeAgent = inngest.createFunction(
   { id: "code-agent" },
   { event: "code-agent/run" },
@@ -23,7 +31,7 @@ export const codeAgent = inngest.createFunction(
       return sandbox.sandboxId;
     });
 
-    const codeAgent = createAgent({
+    const codeAgent = createAgent<AgentState>({
       name: "Code Agent",
       system: PROMPT,
       model: openai({
@@ -75,8 +83,8 @@ export const codeAgent = inngest.createFunction(
               })
             ),
           }),
-          handler: async ({ files }, { step, network }) => {
-            const newFiles = step?.run("createOrUpdateFile", async () => {
+          handler: async ({ files }, { step, network }: Tool.Options<AgentState>) => {
+            const newFiles = await step?.run("createOrUpdateFile", async () => {
               const updatedFiles = network.state.data.files || {};
 
               try {
@@ -144,7 +152,7 @@ export const codeAgent = inngest.createFunction(
       },
     });
 
-    const network = createNetwork({
+    const network = createNetwork<AgentState>({
       name: "coding-network",
       agents: [codeAgent],
       maxIter: 15,
@@ -162,6 +170,10 @@ export const codeAgent = inngest.createFunction(
 
     const result = await network.run(event.data.text);
 
+    const isError =
+      !result.state.data.summary ||
+      Object.keys(result.state.data.files || {}).length === 0;
+
     const sandboxUrl = await step.run("get-sandbox-url", async () => {
       const sandbox = await getSandbox(sandboxId);
       const host = sandbox.getHost(3000);
@@ -170,6 +182,16 @@ export const codeAgent = inngest.createFunction(
     });
 
     await step.run("save-result", async () => {
+      if (isError) {
+        return await prisma.message.create({
+          data: {
+            content: "Something went wrong. Please try again.",
+            role: "ASSISTANT",
+            type: "ERROR",
+          },
+        });
+      }
+
       await prisma.message.create({
         data: {
           content: result.state.data.summary,
