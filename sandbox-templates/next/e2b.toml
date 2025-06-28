@@ -1,0 +1,17 @@
+# This is a config for E2B sandbox template.
+# You can use template ID (qybo7fdeys2uyf8sf2hf) or template name (shini-dev-next-js-test) to create a sandbox:
+
+# Python SDK
+# from e2b import Sandbox, AsyncSandbox
+# sandbox = Sandbox("shini-dev-next-js-test") # Sync sandbox
+# sandbox = await AsyncSandbox.create("shini-dev-next-js-test") # Async sandbox
+
+# JS SDK
+# import { Sandbox } from 'e2b'
+# const sandbox = await Sandbox.create('shini-dev-next-js-test')
+
+team_id = "b3c1f349-0f11-4556-8139-79bef118f62e"
+start_cmd = "/compile_page.sh"
+dockerfile = "e2b.Dockerfile"
+template_name = "shini-dev-next-js-test"
+template_id = "qybo7fdeys2uyf8sf2hf"
