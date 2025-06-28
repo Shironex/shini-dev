@@ -20,6 +20,7 @@ interface AgentState {
   files: {
     [path: string]: string;
   };
+  projectId: string;
 }
 
 export const codeAgent = inngest.createFunction(
@@ -188,6 +189,11 @@ export const codeAgent = inngest.createFunction(
             content: "Something went wrong. Please try again.",
             role: "ASSISTANT",
             type: "ERROR",
+            project: {
+              connect: {
+                id: event.data.projectId,
+              },
+            },
           },
         });
       }
@@ -203,6 +209,11 @@ export const codeAgent = inngest.createFunction(
               summary: result.state.data.summary,
               files: result.state.data.files,
               sandboxUrl,
+            },
+          },
+          project: {
+            connect: {
+              id: event.data.projectId,
             },
           },
         },
