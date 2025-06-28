@@ -12,6 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@inngest/agent-kit": "^0.8.3",
     "@prisma/client": "^6.10.1",
     "@shini-dev/ui": "workspace:*",
     "@tanstack/react-query": "^5.81.5",
@@ -26,6 +27,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "server-only": "^0.0.1",
+    "sonner": "^2.0.5",
     "superjson": "^2.2.2",
     "zod": "^3.24.2"
   },
