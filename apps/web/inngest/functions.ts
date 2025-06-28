@@ -1,15 +1,22 @@
-import { Agent, openai, createAgent, createTool, createNetwork } from "@inngest/agent-kit";
+import {
+  Agent,
+  openai,
+  createAgent,
+  createTool,
+  createNetwork,
+} from "@inngest/agent-kit";
 import { inngest } from "./client";
 import { Sandbox } from "@e2b/code-interpreter";
 import { getSandbox, lastAssistantTextMessageContent } from "./utils";
 import { z } from "zod";
 import { PROMPT } from "./constants";
+import { prisma } from "@/lib/db";
 
 const SANDBOX_TEMPLATE_ID = "shini-dev-next-js-test";
 
-export const helloWorld = inngest.createFunction(
-  { id: "hello-world" },
-  { event: "test/hello.world" },
+export const codeAgent = inngest.createFunction(
+  { id: "code-agent" },
+  { event: "code-agent/run" },
   async ({ event, step }) => {
     const sandboxId = await step.run("get-sandbox-id", async () => {
       const sandbox = await Sandbox.create(SANDBOX_TEMPLATE_ID);
@@ -160,6 +167,24 @@ export const helloWorld = inngest.createFunction(
       const host = sandbox.getHost(3000);
 
       return `https://${host}`;
+    });
+
+    await step.run("save-result", async () => {
+      await prisma.message.create({
+        data: {
+          content: result.state.data.summary,
+          role: "ASSISTANT",
+          type: "RESULT",
+          fragment: {
+            create: {
+              title: "fragment",
+              summary: result.state.data.summary,
+              files: result.state.data.files,
+              sandboxUrl,
+            },
+          },
+        },
+      });
     });
 
     return {

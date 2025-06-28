@@ -14,8 +14,38 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+model Message {
+  id       String      @id @default(uuid())
+  content  String
+  role     MessageRole
+  type     MessageType
+  fragment Fragment?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Fragment {
+  id String @id @default(uuid())
+
+  title      String
+  sandboxUrl String?
+  summary    String?
+  files      Json?
+
+  messageId String  @unique
+  message   Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum MessageRole {
+  USER
+  ASSISTANT
+}
+
+enum MessageType {
+  RESULT
+  ERROR
 }
