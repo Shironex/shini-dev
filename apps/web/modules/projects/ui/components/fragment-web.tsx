@@ -22,14 +22,20 @@ const FragmentWeb = ({ data }: FragmentWebProps) => {
   const handleCopy = () => {
     if (!data.sandboxUrl || navigator === undefined) return;
 
-    navigator.clipboard.writeText(data.sandboxUrl);
-    setCopied(true);
-
-    toast.success("Copied to clipboard");
-
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
+    navigator.clipboard
+      .writeText(data.sandboxUrl)
+      .then(() => {
+        setCopied(true);
+        toast.success("Copied to clipboard");
+      })
+      .finally(() => {
+        setTimeout(() => {
+          setCopied(false);
+        }, 2000);
+      })
+      .catch(() => {
+        toast.error("Failed to copy to clipboard");
+      });
   };
 
   return (
@@ -52,7 +58,7 @@ const FragmentWeb = ({ data }: FragmentWebProps) => {
             <span className="truncate">{data.sandboxUrl}</span>
           </Button>
         </Hint>
-        
+
         <Hint text="Open in new tab">
           <Button
             size="sm"
