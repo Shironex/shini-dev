@@ -48,16 +48,18 @@ const ProjectHeader = ({ projectId }: ProjectHeaderProps) => {
             className="focus-visible:ring-0 hover:bg-transparent hover:opacity-75 transition-opacity pl-2"
             asChild
           >
-            <Image src={"/logo.svg"} alt="logo" width={18} height={18} />
-            <span className="text-sm font-medium">{project.name}</span>
-            <ChevronDownIcon />
+            <div>
+              <Image src={"/logo.svg"} alt="logo" width={18} height={18} />
+              <span className="text-sm font-medium">{project.name}</span>
+              <ChevronDownIcon />
+            </div>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent side="bottom" align="start">
           <DropdownMenuItem>
             <Link href={"/"}>
               <ChevronLeftIcon />
-              <span>Back to Dashboard</span>
+              <span>Back to Home</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />

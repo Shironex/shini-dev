@@ -37,7 +37,7 @@ const MessagesContainer = ({
     if (lastAssistantMessage && lastAssistantMessage.fragment) {
       setActiveFragment(lastAssistantMessage.fragment);
     }
-  }, [messages, setActiveFragment]);
+  }, [messages]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });

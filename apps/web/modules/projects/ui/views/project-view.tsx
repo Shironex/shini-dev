@@ -8,6 +8,7 @@ import {
 import MessagesContainer from "../components/messages-container";
 import { Fragment } from "@/generated/prisma";
 import ProjectHeader from "../components/project-header";
+import FragmentWeb from "../components/fragment-web";
 
 interface ProjectViewProps {
   projectId: string;
@@ -41,7 +42,7 @@ const ProjectView = ({ projectId }: ProjectViewProps) => {
           minSize={50}
           className="flex flex-col min-h-0"
         >
-          TODO: Preview of the project
+          {!!activeFragment && <FragmentWeb data={activeFragment} />}
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
