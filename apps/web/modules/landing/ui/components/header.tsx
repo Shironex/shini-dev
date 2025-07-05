@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@shini-dev/ui/components/button";
 import { Sparkles } from "lucide-react";
+import Link from "next/link";
 
 export const Header = () => {
   return (
@@ -59,9 +60,11 @@ export const Header = () => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          <Button variant="outline" size="sm">
-            Projects
-          </Button>
+          <Link href="/projects">
+            <Button variant="outline" size="sm">
+              Projects
+            </Button>
+          </Link>
         </motion.div>
       </div>
     </motion.header>

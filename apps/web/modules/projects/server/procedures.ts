@@ -27,6 +27,9 @@ export const projectsRouter = createTRPCRouter({
     }),
   getMany: baseProcedure.query(async ({ ctx }) => {
     const projects = await ctx.prisma.project.findMany({
+      include: {
+        messages: true,
+      },
       orderBy: {
         updatedAt: "desc",
       },

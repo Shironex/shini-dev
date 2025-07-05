@@ -57,8 +57,14 @@ const ProjectHeader = ({ projectId }: ProjectHeaderProps) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent side="bottom" align="start">
           <DropdownMenuItem>
-            <Link href={"/"}>
-              <ChevronLeftIcon />
+            <Link href={"/projects"} className="flex items-center gap-2">
+              <ChevronLeftIcon className="size-4" />
+              <span>Back to Projects</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href={"/"} className="flex items-center gap-2">
+              <ChevronLeftIcon className="size-4" />
               <span>Back to Home</span>
             </Link>
           </DropdownMenuItem>
