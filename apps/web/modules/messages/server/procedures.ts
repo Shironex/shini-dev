@@ -36,11 +36,14 @@ export const messagesRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
+      console.log(`[MESSAGE_CREATE] Creating user message for project: ${input.content.projectId}`);
+      
       const createdMessage = await ctx.prisma.message.create({
         data: {
           content: input.content.prompt,
           role: "USER",
           type: "RESULT",
+          status: "COMPLETED",
           project: {
             connect: {
               id: input.content.projectId,
@@ -49,14 +52,65 @@ export const messagesRouter = createTRPCRouter({
         },
       });
 
+      console.log(`[MESSAGE_CREATE] Created user message: ${createdMessage.id}`);
+
+      // Create a streaming assistant message
+      console.log(`[MESSAGE_CREATE] Creating streaming assistant message`);
+      
+      const streamingMessage = await ctx.prisma.message.create({
+        data: {
+          content: "",
+          role: "ASSISTANT",
+          type: "RESULT",
+          status: "STREAMING",
+          project: {
+            connect: {
+              id: input.content.projectId,
+            },
+          },
+        },
+      });
+
+      console.log(`[MESSAGE_CREATE] Created streaming message: ${streamingMessage.id} with status: ${streamingMessage.status}`);
+
+      console.log(`[MESSAGE_CREATE] Sending Inngest event with streamingMessageId: ${streamingMessage.id}`);
+
       await inngest.send({
         name: "code-agent/run",
         data: {
           text: input.content.prompt,
           projectId: input.content.projectId,
+          streamingMessageId: streamingMessage.id,
         },
       });
 
+      console.log(`[MESSAGE_CREATE] Inngest event sent successfully`);
+
       return createdMessage;
+    }),
+  updateStreaming: baseProcedure
+    .input(
+      z.object({
+        messageId: z.string().min(1, { message: "Message ID is required" }),
+        content: z.string(),
+        status: z.enum(["STREAMING", "COMPLETED", "FAILED"]),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      console.log(`[UPDATE_STREAMING] Updating message ${input.messageId} with status: ${input.status}`);
+      
+      const updatedMessage = await ctx.prisma.message.update({
+        where: {
+          id: input.messageId,
+        },
+        data: {
+          content: input.content,
+          status: input.status,
+        },
+      });
+
+      console.log(`[UPDATE_STREAMING] Updated message successfully: ${updatedMessage.id}`);
+      
+      return updatedMessage;
     }),
 });

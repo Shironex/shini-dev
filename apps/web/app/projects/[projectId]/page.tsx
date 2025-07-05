@@ -18,15 +18,13 @@ const ProjectPage = async ({ params }: ProjectPageProps) => {
 
   const queryClient = getQueryClient();
 
-  void queryClient.prefetchQuery({
-    queryKey: ["messages", projectId],
-    queryFn: () => trpc.messages.getMany.queryOptions({ projectId }),
-  });
+  void queryClient.prefetchQuery(
+    trpc.messages.getMany.queryOptions({ projectId })
+  );
 
-  void queryClient.prefetchQuery({
-    queryKey: ["project", projectId],
-    queryFn: () => trpc.projects.getOne.queryOptions({ id: projectId }),
-  });
+  void queryClient.prefetchQuery(
+    trpc.projects.getOne.queryOptions({ id: projectId })
+  );
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>

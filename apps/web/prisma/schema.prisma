@@ -15,10 +15,11 @@ datasource db {
 }
 
 model Message {
-  id       String      @id @default(uuid())
+  id       String         @id @default(uuid())
   content  String
   role     MessageRole
   type     MessageType
+  status   MessageStatus  @default(COMPLETED)
   fragment Fragment?
 
   createdAt DateTime @default(now())
@@ -60,4 +61,11 @@ enum MessageRole {
 enum MessageType {
   RESULT
   ERROR
+}
+
+enum MessageStatus {
+  PENDING
+  STREAMING
+  COMPLETED
+  FAILED
 }

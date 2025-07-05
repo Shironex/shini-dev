@@ -1,11 +1,11 @@
 "use client";
-import { Fragment, MessageRole, MessageType } from "@/generated/prisma";
+import { Fragment, MessageRole, MessageType, MessageStatus } from "@/generated/prisma";
 import React from "react";
 import { Card } from "@shini-dev/ui/components/card";
 import { cn } from "@shini-dev/ui/lib/utils";
 import { format } from "date-fns";
 import Image from "next/image";
-import { ChevronRightIcon, Code2Icon } from "lucide-react";
+import { ChevronRightIcon, Code2Icon, LoaderIcon } from "lucide-react";
 
 interface MessageCardProps {
   content: string;
@@ -15,6 +15,7 @@ interface MessageCardProps {
   isActiveFragment: boolean;
   onFragmentClick: (fragment: Fragment) => void;
   type: MessageType;
+  status?: MessageStatus;
 }
 
 const MessageCard = ({
@@ -25,6 +26,7 @@ const MessageCard = ({
   isActiveFragment,
   onFragmentClick,
   type,
+  status,
 }: MessageCardProps) => {
   if (role === "ASSISTANT") {
     return (
@@ -35,6 +37,7 @@ const MessageCard = ({
         onFragmentClick={onFragmentClick}
         createdAt={createdAt}
         type={type}
+        status={status}
       />
     );
   }
@@ -63,6 +66,7 @@ interface AssistantMessageProps {
   onFragmentClick: (fragment: Fragment) => void;
   type: MessageType;
   createdAt: Date;
+  status?: MessageStatus;
 }
 
 const AssistantMessage = ({
@@ -72,6 +76,7 @@ const AssistantMessage = ({
   onFragmentClick,
   type,
   createdAt,
+  status,
 }: AssistantMessageProps) => {
   return (
     <div
@@ -89,12 +94,24 @@ const AssistantMessage = ({
           className="shrink-0"
         />
         <span className="font-medium text-sm">shini</span>
+        {status === "STREAMING" && (
+          <LoaderIcon className="w-4 h-4 animate-spin text-muted-foreground" />
+        )}
         <span className="font-medium text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
           {format(createdAt, "HH:mm 'on' MMM dd, yyyy")}
         </span>
       </div>
       <div className="pl-8.5 flex flex-col gap-y-2">
-        <span>{content}</span>
+        <div className="whitespace-pre-wrap">
+          {status === "STREAMING" ? (
+            <div>
+              {content}
+              <span className="inline-block w-2 h-4 bg-primary ml-1 animate-pulse" />
+            </div>
+          ) : (
+            content
+          )}
+        </div>
 
         {fragment && type === "RESULT" && (
           <FragmentCard

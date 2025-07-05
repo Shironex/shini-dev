@@ -6,6 +6,7 @@ import MessageCard from "./message-card";
 import MessageForm from "./message-form";
 import { Fragment } from "@/generated/prisma";
 import MessageLoading from "./message-loading";
+import { useStreamingMessages } from "@/hooks/use-streaming-messages";
 
 interface MessagesContainerProps {
   projectId: string;
@@ -20,11 +21,12 @@ const MessagesContainer = ({
 }: MessagesContainerProps) => {
   const bottomRef = useRef<HTMLDivElement>(null);
   const trpc = useTRPC();
+  const { isStreaming } = useStreamingMessages(projectId);
   const { data: messages } = useSuspenseQuery(
     trpc.messages.getMany.queryOptions(
       { projectId },
       {
-        refetchInterval: 5000,
+        refetchInterval: isStreaming ? false : 5000,
       }
     )
   );
@@ -43,8 +45,10 @@ const MessagesContainer = ({
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.length]);
 
-  const lastAssistantMessage = messages[messages.length - 1];
-  const isLastMessageUser = lastAssistantMessage?.role === "USER";
+  const lastMessage = messages[messages.length - 1];
+  const isLastMessageUser = lastMessage?.role === "USER";
+  const hasStreamingMessage = messages.some(msg => msg.status === "STREAMING");
+  const shouldShowLoading = isLastMessageUser && !hasStreamingMessage;
 
   return (
     <div className="flex flex-1 flex-col min-h-0">
@@ -63,9 +67,10 @@ const MessagesContainer = ({
                 setActiveFragment(message.fragment);
               }}
               type={message.type}
+              status={message.status}
             />
           ))}
-          {isLastMessageUser && <MessageLoading />}
+          {shouldShowLoading && <MessageLoading />}
           <div ref={bottomRef} />
         </div>
       </div>

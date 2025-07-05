@@ -72,10 +72,14 @@ const ProjectView = ({ projectId }: ProjectViewProps) => {
               {!!activeFragment && <FragmentWeb data={activeFragment} />}
             </TabsContent>
             <TabsContent value="code" className="min-h-0">
-              {activeFragment?.files && (
+              {activeFragment?.files ? (
                 <FileExplorer
                   files={activeFragment.files as FileCollection}
                 />
+              ) : (
+                <div className="flex items-center justify-center h-full text-muted-foreground">
+                  <p>No files available for this fragment</p>
+                </div>
               )}
             </TabsContent>
           </Tabs>
