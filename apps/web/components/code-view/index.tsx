@@ -16,7 +16,7 @@ interface CodeViewProps {
 const CodeView = ({ code, lang }: CodeViewProps) => {
   useEffect(() => {
     prismjs.highlightAll();
-  }, []);
+  }, [code, lang]);
 
   return (
     <pre className="p-2 bg-transparent border-none rounded-none m-0 text-xs">
